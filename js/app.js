@@ -12,6 +12,8 @@ const obj = {
 //TODO: ver porque no recarga la pagina de manera correcta
 
 
+//NOTE: cada ves que recarge ejecute la siguiente logica
+
 document.addEventListener('DOMContentLoaded', () => {
     consultarCriptomoneda();
 
@@ -22,13 +24,17 @@ document.addEventListener('DOMContentLoaded', () => {
 })
 
 
-//TODO: ver de donde viene este try catch
-try {
-  const respuesta = await fetch(url) ;
-  const resultado = await respuesta.json();
-  const resCriptomoneda = llenarSelect(resultado.Data);
-} catch (error) {
-  console.log(error);
+const consultarCriptomoneda = async () => {
+
+  const url = 'https://min-api.cryptocompare.com/data/top/mktcapfull?limit=10&tsym=USD';
+
+  try {
+    const respuesta = await fetch(url) ;
+    const resultado = await respuesta.json();
+    const resCriptomoneda = llenarSelect(resultado.Data);
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 
@@ -37,28 +43,28 @@ const llenarSelect = (criptomonedas) => {
     criptomonedas.forEach(criptomoneda => {
 
         let criptoArray = [];
-        //console.log(criptomoneda)
 
         const {Name,FullName} = criptomoneda.CoinInfo
         const {PRICE, FROMSYMBOL} = criptomoneda.RAW.USD;
         
-
         //0,8900>PRICE && PRICE>1 ? console.log(PRICE) : console.log('no')
         if(0,900 > PRICE && PRICE < 2 ) {
             criptoArray.push(PRICE, FROMSYMBOL);    
-            //console.log(criptoArray[1]);
 
+	    //NOTE: lleno el select
             const option = document.createElement('option');
             option.textContent = criptoArray[1];
             criptomonedaSelect.appendChild(option);
         }
-        
     });
+
 }
+
 
 const leerValor = (e) => {
   obj[e.target.name] = e.target.value;
 }
+
 
 const submitForm = (e) => {
   e.preventDefault();
@@ -72,11 +78,11 @@ const submitForm = (e) => {
   consultarApi();
 }
 
+
 const consultarApi = async () => {
   const {moneda, criptomoneda} = obj; 
 
   const armarUrl = `https://min-api.cryptocompare.com/data/pricemultifull?fsyms=${criptomoneda}&tsyms=${moneda}`
-
 
   try {
     const respuesta = await fetch(armarUrl) ;
@@ -88,9 +94,8 @@ const consultarApi = async () => {
 
 }
 
+
 const cotizarValores = (cotizacion) => {
-
-
 
   limpiarHtml();
 
